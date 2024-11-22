@@ -1,3 +1,4 @@
 {{page-title "Dashboard"}}
-{{outlet}}
-<button>{{count}}</button>
+
+<button {{on "click" this.addOne}}>{{this.count.value}}</button>
+<p>Test</p>

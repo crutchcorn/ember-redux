@@ -41,17 +41,17 @@ export default class ReduxService extends Service {
 
     const unsubscribe = this.subscription.addNestedSub(() => {
       const data = selector(store.getState());
-      if (equalityFn(selectedState(), data)) {
+      if (equalityFn(selectedState.value, data)) {
         return;
       }
 
-      selectedState.value(data);
+      selectedState.value = data;
     });
 
     registerDestructor(componentThis, () => {
       unsubscribe();
     });
 
-    return selectedState.value;
+    return selectedState;
   }
 }
