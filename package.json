@@ -65,5 +65,9 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "redux": "^5.0.1"
   }
 }
