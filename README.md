@@ -1,57 +1,70 @@
-# ember-redux
+# Ember 3.24 <-> Redux Demo
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+This PR showcases a Redux service to glue framework-agnostic Redux and Redux Toolkit code into Ember:
 
-## Prerequisites
+```javascript
+// app/controllers/application.js
+import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
+import { increment } from '../store/counter-slice';
 
-You will need the following things properly installed on your computer.
+export default class DashboardController extends Controller {
+  @service redux;
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with npm)
-* [Ember CLI](https://ember-cli.com/)
-* [Google Chrome](https://google.com/chrome/)
+  count = this.redux.selector(this, (state) => state.counter.value);
 
-## Installation
+  addOne = () => this.redux.dispatch(increment());
+}
+```
 
-* `git clone <repository-url>` this repository
-* `cd ember-redux`
-* `npm install`
+```javascript
+// counter-slice.js
+import { createSlice } from '@reduxjs/toolkit';
 
-## Running / Development
+const initialState = {
+  value: 0,
+};
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-* Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
+export const counterSlice = createSlice({
+  name: 'counter',
+  initialState,
+  reducers: {
+    increment: (state) => {
+      // Redux Toolkit allows us to write "mutating" logic in reducers. It
+      // doesn't actually mutate the state because it uses the Immer library,
+      // which detects changes to a "draft state" and produces a brand new
+      // immutable state based off those changes
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+    incrementByAmount: (state, action) => {
+      state.value += action.payload;
+    },
+  },
+});
 
-### Code Generators
+// Action creators are generated for each case reducer function
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
-Make use of the many generators for code, try `ember help generate` for more details
+export default counterSlice.reducer;
+```
 
-### Running Tests
+## Usecase
 
-* `ember test`
-* `ember test --server`
+By using Redux as the central store for an Ember app, you can glue the code into React or other supported frameworks and have a single store for multiple frameworks for a migration away from Ember.
 
-### Linting
+## Demo Site
 
-* `npm run lint:hbs`
-* `npm run lint:js`
-* `npm run lint:js -- --fix`
+To see a quick demo of the counter working, you can go to:
 
-### Building
+[https://crutchcorn.github.io/ember-redux/](https://crutchcorn.github.io/ember-redux/)
 
-* `ember build` (development)
-* `ember build --environment production` (production)
+## Local Execution
 
-### Deploying
+To run this demo:
 
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](https://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+- `npm install`
+- `npm run start`
+- Open [http://localhost:4200/ember-redux/](http://localhost:4200/ember-redux/) in your browser
