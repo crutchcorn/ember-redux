@@ -4,7 +4,7 @@ module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'ember-redux',
     environment,
-    rootURL: '/',
+    rootURL: '/ember-redux/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
